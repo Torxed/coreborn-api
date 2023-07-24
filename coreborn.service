@@ -1,0 +1,42 @@
+[Unit]
+Description=coreborn api server
+After=network.target
+
+[Service]
+Type=simple
+User=anton
+Group=anton
+
+# Due to ${RUNTIME_DIRECTORY} not resolving, we've opted to hardcode /run/anton here.
+Environment=PYTHON_EGG_CACHE=/run/coreborn
+Environment=CONFDIR=/etc/coreborn
+
+SyslogIdentifier=coreborn
+PIDFile=${RUNTIME_DIRECTORY}/coreborn.pid
+RuntimeDirectory=coreborn-api
+RuntimeDirectoryMode=755
+#WorkingDirectory=/var/lib/coreborn-api
+
+ExecStart=/usr/bin/uvicorn coreborn:app --reload --port 3334
+ExecReload=/bin/kill -HUP ${MAINPID}
+KillMode=mixed
+KillSignal=SIGINT
+
+OOMScoreAdjust=-200
+
+# Additional security-related features
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+NoNewPrivileges=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+PrivateDevices=true
+RestrictAddressFamilies=AF_INET
+RestrictNamespaces=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

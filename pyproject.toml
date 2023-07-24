@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=67.5"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coreborn"
+dynamic = ["version", "entry-points"]
+description = "Coreborn Map API (using fastapi)"
+authors = [
+    {name = "Anton Hvornum", email = "anton@hvornum.se"},
+]
+license = {text = "AGPL-1.0-or-later"}
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+]
+
+keywords = ["linux", "coreborn", "pyglet", "yubikey", "certificates"]
+
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: POSIX :: Linux",
+]
+
+[project.urls]
+Home = "https://coreborn.app"
+Documentation = "https://coreborn.readthedocs.io/"
+Source = "https://github.com/Torxed/coreborn-api"
+
+[project.optional-dependencies]
+doc = ["sphinx"]
+
+[project.scripts]
+coreborn = "coreborn:run_as_a_module"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["coreborn"]
+
+[options.packages.find]
+where="coreborn/"
+
+[options.package_data]
+coreborn = ["**/*.py", "**/*.png"]
+
+[tool.setuptools.package-data]
+coreborn = ["**/*.py", "**/*.png"]
+
+[tool.setuptools.exclude-package-data]
+mypkg = ["*.pw*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "coreborn.__version__"}
+
+[tool.mypy]
+python_version = "3.11"
+exclude = "tests"
+
+[tool.bandit]
+targets = ["coreborn"]
+exclude = ["/tests"]
