@@ -1,0 +1,19 @@
+# Placed in /etc/coreborn/ or ./
+
+[db]
+username = "coreborn"
+password = "db-password"
+database = "coreborn_test"
+hostname = "127.0.0.1"
+
+[colors]
+heartwood = "#FF0000"
+blushbell = "#00FEB2"
+dornwood = "#0000FF"
+ellyonwood = "#D200FF"
+gold = "#FFD700"
+ambrosite = "#FFA500"
+royalite = "#008080"
+sulfur = "#f1dd38"
+iron = "#C2C2C2"
+coal = "#151716"
