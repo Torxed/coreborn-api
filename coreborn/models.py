@@ -22,9 +22,6 @@ class DBConfig(BaseModel):
 	username :str = 'coreborn'
 	database :str = 'coreborn'
 
-class Configuration(BaseModel):
-	db :DBConfig
-
 class Colors(BaseModel):
 	heartwood :str = "#FF0000"
 	blushbell :str = "#00FEB2"
@@ -36,3 +33,7 @@ class Colors(BaseModel):
 	sulfur :str = "#f1dd38"
 	iron :str = "#C2C2C2"
 	coal :str = "#151716"
+
+class Configuration(BaseModel):
+	db :DBConfig
+	colors :Colors

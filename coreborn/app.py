@@ -8,6 +8,7 @@ from fastapi import FastAPI, Request
 from .database.postgresql import Database
 from .config import config
 from .models import Position
+from .startup import init_data
 
 app = FastAPI()
 
@@ -15,10 +16,14 @@ db = Database(dbname=config.db.database, user=config.db.username, password=confi
 db.init()
 
 def validate_resource(resource, allow_wildcard=False):
-	if resource not in init_data and (allow_wildcard and resource != '*'):
-		raise ValueError(f"Resource does not exist in resource list")
+	if resource == '*':
+		return True
 
-	return True
+	for category in init_data:
+		if resource in init_data[category]:
+			return True
+
+	raise ValueError(f"Resource does not exist in resource list")
 
 @app.get("/api/resources/{resource}")
 def read_root(resource :Union[str, None] = None):
