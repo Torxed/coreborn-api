@@ -15,7 +15,9 @@ SyslogIdentifier=coreborn
 PIDFile=${RUNTIME_DIRECTORY}/coreborn.pid
 RuntimeDirectory=coreborn-api
 RuntimeDirectoryMode=755
-#WorkingDirectory=/var/lib/coreborn-api
+# This enables uvicorn to reload the source on package upgrades
+# (mostly used for testing, not --production)
+WorkingDirectory=/var/lib/python3.11/site-packages/coreborn
 
 ExecStart=/usr/bin/uvicorn coreborn:app --reload --port 3334
 ExecReload=/bin/kill -HUP ${MAINPID}
