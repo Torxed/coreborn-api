@@ -146,8 +146,8 @@ def add_resource(category :str, resource :str, identity :int, request: Request, 
 		""",
 		(identity, identity, identity), force_list=True)
 	):
-		if len(result) >= 2 or (request.client.host or X_Real_IP) == '127.0.0.1':
-			print(f"Removing resource because: Reports is {len(result) >= 2}>=2 or Admin=={(request.client.host or X_Real_IP) == '127.0.0.1'}")
+		if len(result) >= 4 or (request.client.host or X_Real_IP) == '127.0.0.1':
+			print(f"Removing resource because: Reports is {len(result) >= 4}>=4 or Admin=={(request.client.host or X_Real_IP) == '127.0.0.1'}")
 			db.query("""
 				DELETE FROM positions WHERE positions.id=%s
 			""", (result[0]['resource'], ))
