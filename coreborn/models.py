@@ -1,8 +1,8 @@
 from pydantic import BaseModel, validator
 
 class Position(BaseModel):
-	x: float
-	y: float
+	x :float
+	y :float
 
 	@validator('x', each_item=True)
 	def validate_x(cls, v):
@@ -16,11 +16,13 @@ class Position(BaseModel):
 			return v
 		raise ValueError(f"Position() is off the charts")
 
+
 class DBConfig(BaseModel):
 	password :str|None = None
 	hostname :str = '127.0.01'
 	username :str = 'coreborn'
 	database :str = 'coreborn'
+
 
 class Colors(BaseModel):
 	heartwood :str = "#FF0000"
@@ -33,6 +35,7 @@ class Colors(BaseModel):
 	sulfur :str = "#f1dd38"
 	iron :str = "#C2C2C2"
 	coal :str = "#151716"
+
 
 class Configuration(BaseModel):
 	db :DBConfig

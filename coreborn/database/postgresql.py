@@ -90,6 +90,15 @@ class Database:
 			added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 			UNIQUE(resource, x, y)
 		)""")
+		self.query("""
+			CREATE TABLE IF NOT EXISTS node_removal (
+				id BIGSERIAL,
+				resource BIGINT NOT NULL,
+				ip BIGINT NOT NULL,
+				added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+				UNIQUE(resource, ip)
+			)
+		""")
 
 		self.query("""INSERT INTO ip_addresses (ip, blocked) 
 					VALUES(%s, false) ON CONFLICT DO NOTHING""",
