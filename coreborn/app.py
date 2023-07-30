@@ -163,3 +163,9 @@ def add_resource(category :str, resource :str, identity :int, request: Request, 
 		"status": "error"
 	}
 
+
+@app.get('/auth')
+def get_resource(auth_redirect : AuthRedirect):
+	print(auth_redirect)
+
+	return result
