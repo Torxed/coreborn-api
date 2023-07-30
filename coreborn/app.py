@@ -10,7 +10,7 @@ from fastapi.encoders import jsonable_encoder
 
 from .database.postgresql import Database
 from .config import config
-from .models import Position
+from .models import Position, AuthRedirect
 from .startup import init_data
 
 app = FastAPI()
