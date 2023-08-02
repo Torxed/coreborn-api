@@ -1,4 +1,7 @@
 # Placed in /etc/coreborn/ or ./
+[steam.api]
+domain = "example.lan"
+key = "key from https://steamcommunity.com/dev/registerkey"
 
 [db]
 username = "coreborn"

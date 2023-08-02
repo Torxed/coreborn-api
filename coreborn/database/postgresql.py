@@ -68,12 +68,6 @@ class Database:
 		This is a helper function to spawn the tables and starting entries.
 		IP addresses are obfuscated and cleared out after a short period of time to confirm with legal requirements.
 		"""
-		self.query("""CREATE TABLE IF NOT EXISTS ip_addresses (
-			id BIGSERIAL,
-			ip VARCHAR(64) NOT NULL UNIQUE,
-			blocked BOOL,
-			added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-		)""")
 		self.query("""CREATE TABLE IF NOT EXISTS resources (
 			id SERIAL,
 			name VARCHAR NOT NULL UNIQUE,
@@ -86,7 +80,7 @@ class Database:
 			resource BIGINT NOT NULL,
 			x DOUBLE PRECISION NOT NULL,
 			y DOUBLE PRECISION NOT NULL,
-			ip BIGINT NOT NULL,
+			steam_user BIGINT NOT NULL,
 			added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 			UNIQUE(resource, x, y)
 		)""")
@@ -94,16 +88,51 @@ class Database:
 			CREATE TABLE IF NOT EXISTS node_removal (
 				id BIGSERIAL,
 				resource BIGINT NOT NULL,
-				ip BIGINT NOT NULL,
+				steam_user BIGINT NOT NULL,
 				added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-				UNIQUE(resource, ip)
+				UNIQUE(resource, steam_user)
 			)
 		""")
-
-		self.query("""INSERT INTO ip_addresses (ip, blocked) 
-					VALUES(%s, false) ON CONFLICT DO NOTHING""",
-			(hashlib.sha256(b'127.0.0.1').hexdigest(), )
-		)
+		self.query("""
+			CREATE TABLE IF NOT EXISTS steam_users (
+				id BIGSERIAL,
+				steam_id VARCHAR(64) NOT NULL,
+				displayname VARCHAR(1024),
+				avatar VARCHAR(1024),
+				avatarhash VARCHAR(64),
+				primaryclanid VARCHAR(64),
+				added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+				blocked BOOL NOT NULL DEFAULT 'f',
+				UNIQUE(steam_id)
+			)
+		""")
+		self.query("""
+			CREATE TABLE IF NOT EXISTS sessions (
+				id BIGSERIAL,
+				steam_user BIGINT NOT NULL,
+				ip VARCHAR(64) NOT NULL,
+				access_token VARCHAR(64),
+				added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+				UNIQUE(access_token)
+			)
+		""")
+		self.query("""
+			CREATE TABLE IF NOT EXISTS blocks (
+				id BIGSERIAL,
+				steam_id VARCHAR(64) NOT NULL,
+				added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+				UNIQUE(steam_id)
+			)
+		""")
+		self.query("""
+			CREATE TABLE IF NOT EXISTS permissions (
+				id BIGSERIAL,
+				steam_user BIGINT NOT NULL,
+				role VARCHAR(255) NOT NULL,
+				added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+				UNIQUE(steam_user, role)
+			)
+		""")
 
 		with self.connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
 			for category in init_data:
@@ -115,7 +144,7 @@ class Database:
 
 					cur.executemany(
 						f"""
-						INSERT INTO positions (resource, x, y, ip)
+						INSERT INTO positions (resource, x, y, steam_user)
 						VALUES(
 							(SELECT id FROM resources WHERE name='{resource}'), %s, %s, %s
 						) ON CONFLICT DO NOTHING""",
